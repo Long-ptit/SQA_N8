@@ -75,17 +75,15 @@ public class CustomerImpl implements CustomerService {
                 csm.setAddress(customer.getAddress());
                 csm.setEmail(customer.getEmail());
                 csm.setName(customer.getName());
+                csm.setTotalCoins(customer.getTotalCoins());
                 customerRepository.save(csm);
 //                customerRepository.delete(customer);
+                System.out.println("Thanh cong!");
                 return true;
             }
         }else {
             return  false;
         }
-
-
-
-
     }
 
     @Override

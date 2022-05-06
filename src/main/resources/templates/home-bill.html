@@ -36,6 +36,8 @@
             <th scope="col">ID</th>
             <th scope="col">Tên khác hàng</th>
             <th scope="col">Số điện thoại</th>
+            <th scope="col">Id nhân viên </th>
+            <th scope="col">Tên nhân viên </th>
             <th scope="col">Thời gian thanh toán</th>
             <th scope="col">Xem chi tiết</th>
         </tr>
@@ -45,6 +47,8 @@
             <th scope="row" th:text="*{bill.id}"></th>
             <td th:text="*{bill.customer.id}" ></td>
             <td th:text="*{bill.customer.phone}" ></td>
+            <td th:text="*{bill.staff.id}" ></td>
+            <td th:text="*{bill.staff.name}" ></td>
             <td th:text="*{bill.date}"></td>
             <td><a class="btn btn-primary" href="#" role="button" th:href="@{/bill/view(id=${bill.id})}">Xem</a> </td>
         </tr>

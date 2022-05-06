@@ -225,9 +225,17 @@ public class SellController {
         billBanHang.setPriceBack(tienThua);
         billBanHang.setPricePay(tienKhachTraInt);
         Customer customer = customerService.getCustomerById(billBanHang.getCustomer().getId());
-        customer.setTotalCoins(customer.getTotalCoins() - billBanHang.getCoinsPay());
+        if (billBanHang.getActualPrice() > 50000) {
+            customer.setTotalCoins(customer.getTotalCoins() - billBanHang.getCoinsPay() + (int) (billBanHang.getActualPrice()*0.01));
+        } else {
+            customer.setTotalCoins(customer.getTotalCoins() - billBanHang.getCoinsPay());
+        }
+        //
+        System.out.println("gia tri sau khi cộng xu:" + (customer.getTotalCoins() - billBanHang.getCoinsPay() + (int) (billBanHang.getActualPrice()*0.01)));
+        customer.setName("quan quan");
         customerService.edtiCustomer(customer.getId(), customer);
-
+        Staff staff = (Staff) session.getAttribute("staff");
+        billBanHang.setStaff(staff);
         Bill billBH = billService.saveItem(billBanHang);
         for(CartItem item: cartList) {
             item.setBill(billBH);

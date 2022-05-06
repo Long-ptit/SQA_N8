@@ -53,7 +53,7 @@ public class CustomerController {
             System.out.println(customerList.size());
 
             if(customerService.saveCustoemr(customer) == true){
-                return "redirect:/home-staff";
+                return "redirect:/home";
             }else {
                 model.addAttribute("f", "Đã có khách hàng sử dụng số điện thoại trên!");
                 return "add-customer";
