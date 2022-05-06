@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="common/default :: header" />
+
+<body style="padding: 10px 20px">
+
+<div th:replace="common/default :: navbar"> </div>
+
+<h1 style="margin-top: 60px" >Danh sách khách hàng</h1>
+<a  style="padding: 10px 16px; color: white" class="btn btn-primary" th:href="@{/home}" role="button">Quay lại</a>
+<!--<a  style="padding: 10px 16px" class="btn btn-success" th:href="@{/customer/add}" role="button">Thêm khách hàng</a>-->
+
+
+
+<div style="margin: 10px 16px" class="input-group">
+
+  <form method="get" th:action="@{/customer/search}">
+    <div class="row">
+      <input type="text" name="key" placeholder="Số điện thoại" />
+      <button type="submit"  class="btn btn-primary">
+        <i class="fas fa-search"></i>
+      </button>
+    </div>
+  </form>
+
+</div>
+
+<h5 class="text-danger" th:text="${notify}"></h5>
+
+<div style="height: 300px" class="table-wrapper-scroll-y my-custom-scrollbar">
+
+  <table class="table table-bordered table-striped mb-0">
+    <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Tên khác hàng</th>
+      <th scope="col">Số điện thoại</th>
+      <th scope="col">Địa chỉ</th>
+      <th scope="col">Tổng xu(VND)</th>
+      <th scope="col">Trạng thái</th>
+      <th scope="col">Sửa</th>
+      <th scope="col">Xóa</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="customer : ${listCustomer}" >
+      <th scope="row" th:text="*{customer.id}"></th>
+      <td th:text="*{customer.name}" ></td>
+      <td th:text="*{customer.phone}" ></td>
+      <td th:text="*{customer.address}"></td>
+      <td th:text="*{#numbers.formatInteger(customer.totalCoins,3,'COMMA')}"></td>
+      <td th:text="*{customer.isActive}"></td>
+      <td><a class="btn btn-warning" href="#" role="button" th:href="@{/customer/edit?id=}+${customer.id}">Sửa</a> </td>
+      <td><a class="btn btn-danger" href="#" role="button" th:href="@{/customer/delete?id=}+${customer.id}">Xóa</a> </td>
+    </tr>
+
+    </tbody>
+  </table>
+</div>
+<div th:replace="common/default :: body-scripts"> </div>
+</body>
+</html>
