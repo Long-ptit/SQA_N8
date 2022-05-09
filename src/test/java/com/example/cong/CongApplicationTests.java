@@ -12,7 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.List;
 
 @SpringBootTest
-@RunWith(SpringRunner.class)
+    @RunWith(SpringRunner.class)
 class CongApplicationTests {
 
     @Autowired

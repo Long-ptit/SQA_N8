@@ -28,7 +28,6 @@ public class Customer {
     private String phone;
     @NotBlank(message = "Email không được để trống!")
     private String email;
-    @Size(max = 30, min = 6,message = "Địa chỉ không được để trống, và phải từ 6-30 kí tự!!")
     private String address;
     private int totalCoins;
     private int isActive;

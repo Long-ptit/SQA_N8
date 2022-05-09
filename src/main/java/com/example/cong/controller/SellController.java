@@ -6,10 +6,15 @@ import com.example.cong.service.CustomerService;
 import com.example.cong.service.GoodService;
 import com.example.cong.service.BillService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.text.DateFormat;
@@ -65,7 +70,6 @@ public class SellController {
                              @Valid @RequestParam(value = "key", required = false) String key,
                              @RequestParam("soLuong") String soLuong) {
         System.out.println("key" + key);
-
         if (key == null) {
             model.addAttribute("error_chon", "Xin vui long chon 1 san pham");
             return "seeling";
@@ -85,13 +89,13 @@ public class SellController {
         List<CartItem> cartList = (List<CartItem>) session.getAttribute(Constants.LIST_CART);
         Goods matHang = goodService.getGoodById(Integer.parseInt(key));
 
-        boolean check = handleExist(cartList, matHang);
+        boolean check = cartItemService.checkExistCartItem(cartList, matHang);
         //setData for Item
         if (check) {
             for (CartItem item : cartList) {
                 if (item.getGoods().getId() == matHang.getId()) {
                     item.setAmount(item.getAmount() + intSoLuong);
-                    item.setTotalPrice(item.getAmount()*item.getPrice());
+                    item.setTotalPrice(cartItemService.getPriceFromCartItem(intSoLuong, matHang.getPrice()));
                     break;
                 }
             }
@@ -100,16 +104,15 @@ public class SellController {
             itemCart.setName(matHang.getName());
             itemCart.setPrice(matHang.getPrice());
             itemCart.setTotalPrice(matHang.getPrice() * intSoLuong);
+            itemCart.setTotalPrice(cartItemService.getPriceFromCartItem(intSoLuong, matHang.getPrice()));
             itemCart.setAmount(intSoLuong);
             itemCart.setGoods(matHang);
             cartList.add(itemCart);
         }
         int soLuongTong = 0;
         int tongTien = 0;
-        for (CartItem item : cartList) {
-            soLuongTong += item.getAmount();
-            tongTien += item.getTotalPrice();
-        }
+        soLuongTong = cartItemService.getSumQuantityCart(cartList);
+        tongTien = cartItemService.getSumOfListCart(cartList);
         Bill bill = (Bill) session.getAttribute(Constants.BILL);
         bill.setTotalPrice(tongTien);
         bill.setTotalAmount(soLuongTong);
@@ -121,19 +124,11 @@ public class SellController {
     @GetMapping(path = "/xoaSanPham")
     public String deleteSanPham(@RequestParam("id") long id, HttpSession session) {
         List<CartItem> cartList = (List<CartItem>) session.getAttribute(Constants.LIST_CART);
-        for (CartItem item : cartList) {
-            if (item.getGoods().getId() == id) {
-                cartList.remove(item);
-                break;
-            }
-        }
-        ;
-        int soLuongTong = 0;
-        int tongTien = 0;
-        for (CartItem item : cartList) {
-            soLuongTong += item.getAmount();
-            tongTien += item.getTotalPrice();
-        }
+        cartList = cartItemService.handleDeleteCartItem(id, cartList);
+        int soLuongTong;
+        int tongTien;
+        soLuongTong = cartItemService.getSumQuantityCart(cartList);
+        tongTien = cartItemService.getSumOfListCart(cartList);
         Bill bill = (Bill) session.getAttribute(Constants.BILL);
         bill.setTotalPrice(tongTien);
         bill.setTotalAmount(soLuongTong);
@@ -142,15 +137,6 @@ public class SellController {
         return "seeling";
     }
 
-    private boolean handleExist(List<CartItem> list, Goods goods) {
-        for (CartItem item : list) {
-            if (item.getGoods().getId() == goods.getId()) {
-                return true;
-            }
-        }
-        System.out.println(list.size());
-        return false;
-    }
 
     @PostMapping(path = "/confirm")
     public String gotoConfirm(HttpSession session, @RequestParam("giamGia") String giamGia,
@@ -176,19 +162,18 @@ public class SellController {
             model.addAttribute("error_giam_gia", "Vui lòng nhập giá trị là số nguyen từ 1 đến 100");
             return "seeling";
         }
-
+        bill.setDiscount(intGiamGia);
         int tongTien = bill.getTotalPrice();
         int tienSauGiamGia = 0;
-        int tienSauKM = tongTien*(100-intGiamGia)/100;
+        int tienSauKM = billService.getPriceAfterSale(bill);
         if (xu != null) {
             tienSauGiamGia = tienSauKM - customerService.getCustomerById(id).getTotalCoins();
             if (tienSauGiamGia < 0) {
                 tienSauGiamGia = 0;
-                bill.setCoinsPay((int) tienSauKM);
+                bill.setCoinsPay(tienSauKM);
             } else {
                 bill.setCoinsPay(customerService.getCustomerById(id).getTotalCoins());
             }
-
         } else {
             tienSauGiamGia = tienSauKM;
             bill.setCoinsPay(0);
@@ -201,6 +186,7 @@ public class SellController {
 
     @PostMapping(path = "/saveHoaDon")
     public String saveHoaDon(
+            RedirectAttributes redirectAttributes,
             Model model,
             HttpSession session,
             @RequestParam("tienThua") int tienThua,
@@ -212,7 +198,14 @@ public class SellController {
         try {
             tienKhachTraInt = Integer.parseInt(tienKhachTra);
         } catch (Exception e) {
-            System.out.println(e.toString());
+            System.out.println(e);
+            model.addAttribute("error", "Vui lòng nhập đúng định dạng là số nguyên và lớn hơn 0");
+            return "confirm-selling";
+        }
+
+        System.out.println("tien thua: " + tienThua);
+        if (tienThua == -1) {
+            model.addAttribute("error", "Số tiền trả nhỏ hơn tổng tiền");
             return "confirm-selling";
         }
 
@@ -225,14 +218,8 @@ public class SellController {
         billBanHang.setPriceBack(tienThua);
         billBanHang.setPricePay(tienKhachTraInt);
         Customer customer = customerService.getCustomerById(billBanHang.getCustomer().getId());
-        if (billBanHang.getActualPrice() > 50000) {
-            customer.setTotalCoins(customer.getTotalCoins() - billBanHang.getCoinsPay() + (int) (billBanHang.getActualPrice()*0.01));
-        } else {
-            customer.setTotalCoins(customer.getTotalCoins() - billBanHang.getCoinsPay());
-        }
+        customer.setTotalCoins(billService.getCoinAftefSaveBll(billBanHang, customer));
         //
-        System.out.println("gia tri sau khi cộng xu:" + (customer.getTotalCoins() - billBanHang.getCoinsPay() + (int) (billBanHang.getActualPrice()*0.01)));
-        customer.setName("quan quan");
         customerService.edtiCustomer(customer.getId(), customer);
         Staff staff = (Staff) session.getAttribute("staff");
         billBanHang.setStaff(staff);
@@ -242,6 +229,8 @@ public class SellController {
             cartItemService.saveItem(item);
         }
         //back back
+        session.setAttribute("message", "Success");
         return "redirect:/banhang/home";
     }
+
 }

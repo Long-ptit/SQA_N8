@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BillImpl implements BillService {
@@ -31,7 +32,12 @@ public class BillImpl implements BillService {
 
     @Override
     public Bill getBillByIdBill(long id) {
-        return repository.getById(id);
+        Optional<Bill> optionalBill = repository.findById(id);
+        if (optionalBill.isPresent()) {
+            return optionalBill.get();
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -39,10 +45,20 @@ public class BillImpl implements BillService {
         return repository.getBillByIDCustomer(id);
     }
 
+//    @Override
+//    public Bill deleteBill(long id) {
+//        Bill bill = repository.getById(id);
+//        bill.setIsActive(0);
+//        return repository.save(bill);
+//    }
+
     @Override
-    public Bill deleteBill(long id) {
-        Bill bill = repository.getById(id);
-        bill.setIsActive(0);
-        return repository.save(bill);
+    public int getPriceAfterSale(Bill bill) {
+        return bill.getTotalPrice() * (100 - bill.getDiscount()) / 100;
+    }
+
+    @Override
+    public int getCoinAftefSaveBll(Bill bill, Customer customer) {
+          return customer.getTotalCoins() - bill.getCoinsPay() + (int) (bill.getActualPrice()*0.01);
     }
 }

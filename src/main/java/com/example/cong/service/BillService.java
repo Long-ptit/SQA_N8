@@ -1,6 +1,7 @@
 package com.example.cong.service;
 
 import com.example.cong.entitis.Bill;
+import com.example.cong.entitis.Customer;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,5 +13,6 @@ public interface BillService {
     List<Bill> getAllBills();
     Bill getBillByIdBill(long id);
     List<Bill> getBillsByIDCustomer(long id);
-    Bill deleteBill(long id);
+    int getPriceAfterSale(Bill bill);
+    int getCoinAftefSaveBll(Bill bill, Customer customer);
 }

@@ -202,13 +202,16 @@
                             <input type="text" class="form-control ms-1" style="width: 3cm; height: 30px; "
                                    id="khachTra" name="tienKhachTra" th:value="${session.bill.actualPrice}"
                                    onblur="myFunction()"></div>
-
                     </div>
                     <div class="row">
                         <div class="col-7 d-flex justify-content-start me-4 mb-1 " style="font-weight: bold;"
                              id="tienThua" th:text="'Tiền trả lại (VND): 0'"></div>
                     </div>
-
+                    <div class="row">
+                        <div class="col-7 d-flex justify-content-start me-4 mb-1 " style="font-weight: bold; color: red"
+                             th:text="${error}">
+                        </div>
+                    </div>
 
             </div>
 
@@ -251,12 +254,14 @@
         if (isNaN(input.value) || !Number.isInteger(parseFloat(input.value))) {
             alert("Nhập sai kiểu dữ liệu")
             document.getElementById("tienThua").innerHTML = "Tiền trả lại (VND): 0";
+            document.querySelector('#tienThuaInput').value = -1;
             return
         }
 
         if (parseInt(input.value) < parseInt(tongTien.value)) {
             alert("Vui lòng nhập số tiền cần phải trả lớn hơn số tiền hàng đã mua")
             document.getElementById("tienThua").innerHTML = "Tiền trả lại (VND): 0";
+            document.querySelector('#tienThuaInput').value = -1;
             return
         }
 

@@ -6,6 +6,7 @@ import com.example.cong.entitis.Customer;
 import com.example.cong.service.CartItemService;
 import com.example.cong.service.CustomerService;
 import com.example.cong.service.BillService;
+import com.example.cong.service.impl.BillImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,7 +22,7 @@ import java.util.List;
 public class BillController {
 
     @Autowired
-    BillService billService;
+    BillImpl billService;
 
     @Autowired
     CartItemService cartItemService;
@@ -47,17 +48,6 @@ public class BillController {
         return "detail-bill";
     }
 
-    public static boolean isNumeric(String strNum) {
-        if (strNum == null) {
-            return false;
-        }
-        try {
-            double d = Integer.parseInt(strNum);
-        } catch (NumberFormatException nfe) {
-            return false;
-        }
-        return true;
-    }
 
     @GetMapping("/search")
     public String search(@RequestParam("key") String text, Model model) {

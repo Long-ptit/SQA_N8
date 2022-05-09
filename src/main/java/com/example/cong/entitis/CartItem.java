@@ -23,4 +23,23 @@ public class CartItem {
     @ManyToOne()
     @JoinColumn(name = "id_bill")
     private Bill bill;
+
+    public CartItem(String name, int amount, int price, int discount, int totalPrice, Goods goods, Bill bill) {
+        this.name = name;
+        this.amount = amount;
+        this.price = price;
+        this.discount = discount;
+        this.totalPrice = totalPrice;
+        this.goods = goods;
+        this.bill = bill;
+    }
+
+    public CartItem() {
+
+    }
+
+    public CartItem(int totalPrice, int amount) {
+        this.totalPrice = totalPrice;
+        this.amount = amount;
+    }
 }
