@@ -20,8 +20,13 @@ public class BillImpl implements BillService {
     @Override
     @Transactional
     public Bill saveItem(Bill item) {
+        Customer customer = item.getCustomer();
         //kích hoạt
         item.setIsActive(1);
+        item.setCustomerName(customer.getName());
+        item.setCustomerPhone(customer.getPhone());
+        item.setCustomerEmail(customer.getEmail());
+        item.setCustomerAddress(customer.getAddress());
         return repository.save(item);
     }
 
@@ -60,5 +65,10 @@ public class BillImpl implements BillService {
     @Override
     public int getCoinAftefSaveBll(Bill bill, Customer customer) {
           return customer.getTotalCoins() - bill.getCoinsPay() + (int) (bill.getActualPrice()*0.01);
+    }
+
+    @Override
+    public int getCoinWhenSave(Bill bill, Customer customer) {
+        return (int) (bill.getActualPrice()*0.01);
     }
 }

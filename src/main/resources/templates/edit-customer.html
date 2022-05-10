@@ -55,7 +55,7 @@
       <p class="col-10 text-danger" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></p>
     </div>
     <div class="row">
-      <p class="col-2">Tổng xu</p>
+      <p class="col-2">Tổng điểm tích lũy (VND)</p>
       <p class="col-10"><input class="form-control" type="text" value="" th:value="${#numbers.formatInteger(customer.totalCoins,3,'COMMA')} "  name="total"  id="toatalID" disabled></p>
     </div>
 

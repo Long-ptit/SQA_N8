@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="common/default :: header"/>
 <style>
@@ -142,6 +142,8 @@
 </style>
 <body>
 <div th:replace="common/default :: navbar"></div>
+<h1 style="margin-top: 60px" >Bán hàng</h1>
+<a  style="padding: 10px 16px; color: white" class="btn btn-primary" th:href="@{/home}" role="button">Quay lại</a>
 <div>
     </div>
     <div class="d-flex justify-content-center">
@@ -171,7 +173,7 @@
                         <table class="table table-hover">
                             <thead class="">
                             <tr>
-                                <th scope="col">ID</th>
+                                <th scope="col">Mã khách hàng</th>
                                 <th scope="col">Họ và tên</th>
                                 <th scope="col">Số điện thoại</th>
                                 <th scope="col">Địa chỉ</th>
@@ -217,8 +219,8 @@
                         <table class="table table-hover">
                             <thead class="">
                             <tr>
-                                <th scope="col">ID</th>
-                                <th scope="col">Sản phẩm</th>
+                                <th scope="col">Mã sản phẩm</th>
+                                <th scope="col">Tên phẩm</th>
                                 <th scope="col">Đơn vị</th>
                                 <th scope="col">Đơn giá</th>
                                 <th scope="col">Chọn</th>
@@ -240,7 +242,7 @@
                 <div class="row d-flex justify-content-center mt-4">
                     <div class=" input-group">
                         <label for="">Nhập số lượng: </label>
-                        <input type="text" value="" class="form-control ms-2" name="soLuong" required>
+                        <input value="" class="form-control ms-2" name="soLuong" required type="number">
                         <button type="submit" class="btn btn-primary" id="themsp">Thêm</button>
                     </div>
                 </div>
@@ -248,32 +250,43 @@
             </form>
         </div>
         <div class="ms-3 formBanHang col-5">
-            <h5 th:text="'Tên khách hàng: ' + ${session.bill.getCustomer.name}"></h5>
-            <p th:text="'Số điện thoại: ' + ${session.bill.getCustomer.phone}"></p>
+            <h5 th:if="${session.bill.getCustomer().name != null}" th:text="'Tên khách hàng: ' + ${session.bill.getCustomer.name}"></h5>
+            <h5 th:if="${session.bill.getCustomer().phone != null}"  th:text="'Số điện thoại: ' + ${session.bill.getCustomer.phone}"></h5>
+            <h5 th:if="${session.bill.getCustomer().name != null}" th:text="'Mã khách hàng: ' + ${session.bill.getCustomer.id}"></h5>
             <span style="color:red" th:text="${error_khach_hang}"></span>
             <div class="anyClass">
                 <div class="table-KH " id="myTable">
                     <table class="table table-hover">
                         <thead class="">
                         <tr>
-                            <th scope="col">ID</th>
-                            <th scope="col">Sản phẩm</th>
+                            <th scope="col">STT</th>
+                            <th scope="col">Mã sản phẩm</th>
+                            <th scope="col">Tên sản phẩm</th>
                             <th scope="col">Số lượng</th>
-                            <th scope="col">Giá tiền</th>
+                            <th scope="col">Đơn giá</th>
+                            <th scope="col">Thành tiền</th>
                             <th scope="col">Chọn</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="cart : ${session.listCart}">
+                        <form th:action="@{/banhang/suaSanPham}" method="post">
+                        <tr th:each="cart,index : ${session.listCart}">
+                            <td th:text="${index.index + 1}"></td>
                             <td th:text="${cart.goods.id}"></td>
                             <td th:text="${cart.name}"></td>
-                            <td th:text="${cart.amount}"></td>
+                            <td>
+                                <input type="number" th:value="${cart.amount}" required name="soLuongSua" min="1" style="width: 1.5cm; text-align: center">
+                            </td>
+                            <td th:text="${#numbers.formatInteger(cart.price,3,'COMMA')}"></td>
                             <td th:text="${#numbers.formatInteger(cart.totalPrice,3,'COMMA')}"></td>
                             <td>
-                                <a th:href="@{/banhang/xoaSanPham(id=${cart.goods.id})}" th:text="Xóa"> </a>
+                                <a th:href="@{/banhang/xoaSanPham(id=${cart.goods.id})}" class="btn btn-primary chonKH" th:text="Xóa"> </a>
+                                <button type="submit" th:text="Sửa" class="btn btn-primary chonKH"> </button>
+                                <input th:value="${cart.goods.id}" name="id" hidden>
                             </td>
                         </tr>
                         </tbody>
+                        </form>
                     </table>
                 </div>
                 <form th:action="@{/banhang/confirm}" method="post">
@@ -289,9 +302,16 @@
                     </div>
 
                     <div class="row">
+                        <div class="d-flex justify-content-start me-4 mb-1 " style="font-weight: bold;">
+                            Giảm giá:
+                            <input type="text" class="form-control ms-1" style="width: 2cm; height: 30px; "
+                                   name="giamGia" value="0"></div>
+
+                    </div>
+                    <div class="row">
                         <div class="d-flex justify-content-start me-4 mb-1 "
                              style="font-weight: bold;  align-items: center" ;>
-                            Sử dụng xu:
+                            Sử dụng điểm tích lũy:
                             <input type="checkbox" th:value="0" name="xu" style="margin-top: 4px; margin-left: 5px">
                         </div>
                         <input th:value="${session.bill.getCustomer.id}" hidden name="id">
@@ -299,18 +319,16 @@
                     </div>
 
                     <div class="row">
-                        <div class="d-flex justify-content-start me-4 mb-1 " style="font-weight: bold;">
-                            Giảm giá:
-                            <input type="text" class="form-control ms-1" style="width: 2cm; height: 30px; "
-                                   name="giamGia" value="0"></div>
-
-                    </div>
-
-                    <div class="row">
                         <div class="d-flex justify-content-start me-4 mb-1 "
                              style="font-weight: bold; color: red">
                             <span style="color:red" th:text="${error_giam_gia}"></span>
 
+                        </div>
+                    </div>
+
+                    <div class="row" th:if="${session.bill.customer.getName() != null}">
+                        <div class="d-flex justify-content-start me-4 mb-1 " style="font-weight: bold;"
+                             th:text="'Tổng điểm tích lũy (VND) : ' + ${#numbers.formatInteger(session.bill.customer.totalCoins,3,'COMMA')}">Tổng tiền: 12
                         </div>
                     </div>
                     <hr>

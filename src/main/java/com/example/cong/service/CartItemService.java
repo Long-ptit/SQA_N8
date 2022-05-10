@@ -16,4 +16,5 @@ public interface CartItemService {
     int getPriceFromCartItem(int quantity, int price);
     boolean checkExistCartItem(List<CartItem> list, Goods goods);
     List<CartItem> handleDeleteCartItem(long id, List<CartItem> list);
+    List<CartItem> handleEditCartItem(long id, int quantity, List<CartItem> list);
 }

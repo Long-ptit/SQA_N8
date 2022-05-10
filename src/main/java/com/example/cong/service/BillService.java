@@ -15,4 +15,5 @@ public interface BillService {
     List<Bill> getBillsByIDCustomer(long id);
     int getPriceAfterSale(Bill bill);
     int getCoinAftefSaveBll(Bill bill, Customer customer);
+    int getCoinWhenSave(Bill bill, Customer customer);
 }

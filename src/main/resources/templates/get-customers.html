@@ -35,31 +35,43 @@
   <table class="table table-bordered table-striped mb-0">
     <thead>
     <tr>
-      <th scope="col">ID</th>
-      <th scope="col">Tên khác hàng</th>
+      <th scope="col">STT</th>
+      <th scope="col">Mã khách hàng</th>
+      <th scope="col">Tên khách hàng</th>
       <th scope="col">Số điện thoại</th>
       <th scope="col">Địa chỉ</th>
-      <th scope="col">Tổng xu(VND)</th>
-      <th scope="col">Trạng thái</th>
+      <th scope="col">Email</th>
+      <th scope="col">Tổng điểm tích lũy(VND)</th>
       <th scope="col">Sửa</th>
       <th scope="col">Xóa</th>
     </tr>
     </thead>
     <tbody>
-    <tr th:each="customer : ${listCustomer}" >
-      <th scope="row" th:text="*{customer.id}"></th>
+    <tr th:each="customer, index : ${listCustomer}" >
+      <th scope="row" th:text="*{index.index + 1}"></th>
+      <th th:text="*{customer.id}"></th>
       <td th:text="*{customer.name}" ></td>
       <td th:text="*{customer.phone}" ></td>
       <td th:text="*{customer.address}"></td>
+      <td th:text="*{customer.email}" ></td>
       <td th:text="*{#numbers.formatInteger(customer.totalCoins,3,'COMMA')}"></td>
-      <td th:text="*{customer.isActive}"></td>
       <td><a class="btn btn-warning" href="#" role="button" th:href="@{/customer/edit?id=}+${customer.id}">Sửa</a> </td>
-      <td><a class="btn btn-danger" href="#" role="button" th:href="@{/customer/delete?id=}+${customer.id}">Xóa</a> </td>
+      <td><button class="btn btn-danger" role="button" th:onclick="'Confirm(\'' + ${customer.id} + '\');'" type="button" >Xóa</button> </td>
     </tr>
 
     </tbody>
   </table>
 </div>
 <div th:replace="common/default :: body-scripts"> </div>
+<script>
+  function Confirm(id){
+    var choose = confirm("Bạn có chắc chắc muốn xóa người dùng nay không?");
+    if(choose==true){
+      window.location.href='/customer/delete?id='+id;
+      //var x = window.location.href;
+      //console.log(x);
+    }
+  }
+</script>
 </body>
 </html>

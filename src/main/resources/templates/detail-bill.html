@@ -145,24 +145,29 @@
 <div>
     <div class="container col-8">
         <div class="formBanHang">
-
-            <h5 th:text="'Tên khách hàng: ' + ${bill.customer.name}"></h5>
-            <p th:text="'Số điện thoại: ' + ${bill.customer.phone}"></p>
+            <h3> HÓA ĐƠN BÁN HÀNG </h3>
+            <h5 th:text="'Thời gian mua hàng: ' + ${bill.date}" style="margin-top: 10px"></h5>
+            <h5 th:text="'Tên khách hàng: ' + ${bill.customerName}"></h5>
+            <h5 th:text="'Số điện thoại: ' + ${bill.customerPhone}"></h5>
             <div class="anyClass">
                 <div class="table-KH " id="myTable">
                     <table class="table table-hover">
                         <thead class="">
                         <tr>
-                            <th scope="col">ID</th>
-                            <th scope="col">Sản phẩm</th>
+                            <th scope="col">STT</th>
+                            <th scope="col">Mã sản phẩm</th>
+                            <th scope="col">Tên sản phẩm</th>
+                            <th scope="col">Đơn giá</th>
                             <th scope="col">Số lượng</th>
-                            <th scope="col">Giá tiền</th>
+                            <th scope="col">Thành tiền</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="cart : ${listCart}">
+                        <tr th:each="cart,index : ${listCart}">
+                            <td th:text="${index.index + 1}"></td>
                             <td th:text="${cart.goods.id}"></td>
                             <td th:text="${cart.name}"></td>
+                            <td th:text="${#numbers.formatInteger(cart.price,3,'COMMA')}"></td>
                             <td th:text="${cart.amount}"></td>
                             <td th:text="${#numbers.formatInteger(cart.totalPrice,3,'COMMA')}"></td>
                         </tr>
@@ -187,7 +192,7 @@
                 </div>
                 <div class="row">
                     <div class="col-7 d-flex justify-content-start me-4 mb-1 " style="font-weight: bold;"
-                         th:text="'Trừ xu: ' + ${#numbers.formatInteger(bill.coinsPay,3,'COMMA')}">Tổng tiền: 12
+                         th:text="'Điểm tích lũy sử dụng (VND): ' + ${#numbers.formatInteger(bill.coinsPay,3,'COMMA')}">Tổng tiền: 12
                     </div>
                 </div>
                 <div class="row">

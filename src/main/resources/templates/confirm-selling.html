@@ -142,27 +142,34 @@
 </style>
 <body>
 <div th:replace="common/default :: navbar"> </div>
+<h1 style="margin-top: 60px" >Xác nhận đơn hàng</h1>
+<a  style="padding: 10px 16px; color: white" class="btn btn-primary" th:href="@{/home}" role="button">Quay lại</a>
 <div>
     <div class="container col-8">
         <div class="formBanHang">
 
             <h5 th:text="'Tên khách hàng: ' + ${session.bill.getCustomer.name}"></h5>
-            <p th:text="'Số điện thoại: ' + ${session.bill.getCustomer.phone}"></p>
+            <h5 th:text="'Mã khách hàng: ' + ${session.bill.getCustomer.id}"></h5>
+            <h5 th:text="'Số điện thoại: ' + ${session.bill.getCustomer.phone}"></h5>
             <div class="anyClass">
                 <div class="table-KH " id="myTable">
                     <table class="table table-hover">
                         <thead class="">
                         <tr>
-                            <th scope="col">ID</th>
-                            <th scope="col">Sản phẩm</th>
+                            <th scope="col">STT</th>
+                            <th scope="col">Mã sản phẩm</th>
+                            <th scope="col">Tên sản phẩm</th>
+                            <th scope="col">Đơn giá</th>
                             <th scope="col">Số lượng</th>
-                            <th scope="col">Giá tiền</th>
+                            <th scope="col">Thành tiền</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="cart : ${session.listCart}">
+                        <tr th:each="cart,index : ${session.listCart}">
+                            <td th:text="${index.index + 1}"></td>
                             <td th:text="${cart.goods.id}"></td>
                             <td th:text="${cart.name}"></td>
+                            <td th:text="${#numbers.formatInteger(cart.price,3,'COMMA')}"></td>
                             <td th:text="${cart.amount}"></td>
                             <td th:text="${#numbers.formatInteger(cart.totalPrice,3,'COMMA')}"></td>
                         </tr>
@@ -187,7 +194,7 @@
                 </div>
                 <div class="row">
                     <div class="col-7 d-flex justify-content-start me-4 mb-1 " style="font-weight: bold;"
-                         th:text="'Trừ xu: ' + ${session.bill.coinsPay}">Tổng tiền: 12
+                         th:text="'Điểm tích lũy sử dụng (VND): ' +${#numbers.formatInteger(session.bill.coinsPay,3,'COMMA')}">Tổng tiền: 12
                     </div>
                 </div>
                 <div class="row">
@@ -195,12 +202,19 @@
                          th:text="'Tiền cuối cùng (VND): ' +  ${#numbers.formatInteger(session.bill.actualPrice,3,'COMMA')}"></div>
                     <input id="tongTien" th:value="${session.bill.actualPrice}" hidden/>
                 </div>
+                <div class="row">
+                    <div class="col-7 d-flex justify-content-start me-4 mb-1 " style="font-weight: bold;"
+                         th:text="'Điểm tích lũy thêm sau khi mua đơn hàng (VND): ' +  ${#numbers.formatInteger(session.xuNhan,3,'COMMA')}"></div>
+                </div>
                 <form th:action="@{/banhang/saveHoaDon}" method="post">
                     <div class="row">
                         <div class="col-7 d-flex justify-content-start me-4 mb-1 " style="font-weight: bold;">
                             Tiền khách trả:
-                            <input type="text" class="form-control ms-1" style="width: 3cm; height: 30px; "
-                                   id="khachTra" name="tienKhachTra" th:value="${session.bill.actualPrice}"
+                            <input class="form-control ms-1" style="width: 3cm; height: 30px; "
+                                   id="khachTra" name="tienKhachTra"
+                                   th:value="${session.bill.actualPrice}" type="number"
+                                   th:min="${session.bill.actualPrice}"
+                                   required
                                    onblur="myFunction()"></div>
                     </div>
                     <div class="row">
@@ -251,19 +265,6 @@
         var input, tongTien, tienThua;
         input = document.getElementById("khachTra");
         tongTien = document.getElementById("tongTien");
-        if (isNaN(input.value) || !Number.isInteger(parseFloat(input.value))) {
-            alert("Nhập sai kiểu dữ liệu")
-            document.getElementById("tienThua").innerHTML = "Tiền trả lại (VND): 0";
-            document.querySelector('#tienThuaInput').value = -1;
-            return
-        }
-
-        if (parseInt(input.value) < parseInt(tongTien.value)) {
-            alert("Vui lòng nhập số tiền cần phải trả lớn hơn số tiền hàng đã mua")
-            document.getElementById("tienThua").innerHTML = "Tiền trả lại (VND): 0";
-            document.querySelector('#tienThuaInput').value = -1;
-            return
-        }
 
         tienThua = input.value - tongTien.value
         document.getElementById("tienThua").innerHTML = "Tiền trả lại (VND): " + tienThua;

@@ -47,8 +47,9 @@ public class SellController {
         List<Customer> listCustomer = customerService.getAllCustomer();
         List<CartItem> listCartItem = new ArrayList<>();
         Bill bill = new Bill();
-        bill.setCustomer(customerService.getCustomerById(1));
+        //bill.setCustomer(customerService.getCustomerById(1));
         //lưu list vào session
+        bill.setCustomer(new Customer());
         session.setAttribute(Constants.LIST_MAT_HANG, listMatHang);
         session.setAttribute(Constants.BILL, bill);
         session.setAttribute(Constants.LIST_KHACH_HANG, listCustomer);
@@ -138,15 +139,35 @@ public class SellController {
     }
 
 
+    @PostMapping(path = "/suaSanPham")
+    public String editSanPham(@RequestParam("id") long id,@RequestParam("soLuongSua") int soLuongSua, HttpSession session) {
+        List<CartItem> cartList = (List<CartItem>) session.getAttribute(Constants.LIST_CART);
+        cartList = cartItemService.handleEditCartItem(id, soLuongSua, cartList);
+        int soLuongTong;
+        int tongTien;
+        soLuongTong = cartItemService.getSumQuantityCart(cartList);
+        tongTien = cartItemService.getSumOfListCart(cartList);
+        Bill bill = (Bill) session.getAttribute(Constants.BILL);
+        bill.setTotalPrice(tongTien);
+        bill.setTotalAmount(soLuongTong);
+        session.setAttribute(Constants.BILL, bill);
+        session.setAttribute(Constants.LIST_CART, cartList);
+        return "seeling";
+    }
+
+
     @PostMapping(path = "/confirm")
     public String gotoConfirm(HttpSession session, @RequestParam("giamGia") String giamGia,
                               @Valid @RequestParam(value = "xu", required = false) String xu,
                               @RequestParam("id") int id, Model model)
     {
 
-
         List<CartItem> cartList = (List<CartItem>) session.getAttribute(Constants.LIST_CART);
         Bill bill = (Bill) session.getAttribute(Constants.BILL);
+        if (bill.getCustomer().getName() == null) {
+            model.addAttribute("error_khach_hang", "Vui lòng thêm một khách hàng");
+            return "seeling";
+        }
         if (cartList.size() == 0) {
             model.addAttribute("error_khach_hang", "Vui lòng thêm một mặt hàng");
             return "seeling";
@@ -181,6 +202,8 @@ public class SellController {
         bill.setActualPrice(tienSauGiamGia);
         bill.setCustomer(customerService.getCustomerById(id));
         bill.setDiscount(intGiamGia);
+        Customer customer = customerService.getCustomerById(bill.getCustomer().getId());
+        session.setAttribute("xuNhan", billService.getCoinWhenSave(bill, customer));
         return "confirm-selling";
     }
 
@@ -190,24 +213,9 @@ public class SellController {
             Model model,
             HttpSession session,
             @RequestParam("tienThua") int tienThua,
-            @RequestParam("tienKhachTra") String tienKhachTra
+            @RequestParam("tienKhachTra") int tienKhachTraInt
             )
     {
-
-        int tienKhachTraInt = 0;
-        try {
-            tienKhachTraInt = Integer.parseInt(tienKhachTra);
-        } catch (Exception e) {
-            System.out.println(e);
-            model.addAttribute("error", "Vui lòng nhập đúng định dạng là số nguyên và lớn hơn 0");
-            return "confirm-selling";
-        }
-
-        System.out.println("tien thua: " + tienThua);
-        if (tienThua == -1) {
-            model.addAttribute("error", "Số tiền trả nhỏ hơn tổng tiền");
-            return "confirm-selling";
-        }
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         List<CartItem> cartList = (List<CartItem>) session.getAttribute(Constants.LIST_CART);

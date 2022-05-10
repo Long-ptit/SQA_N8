@@ -3,6 +3,8 @@ package com.example.cong.entitis;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @Data
 @Entity
@@ -20,6 +22,10 @@ public class Bill {
     private int pricePay;
     private int priceBack;
     private int isActive;
+    private String customerName;
+    private String customerPhone;
+    private String customerEmail;
+    private String customerAddress;
     @OneToOne
     @JoinColumn(name = "id_staff")//name="tên cột khóa ngoại"
     Staff staff;

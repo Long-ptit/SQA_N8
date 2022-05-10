@@ -73,4 +73,17 @@ public class CartItemImpl implements CartItemService {
         }
         return itemList;
     }
+
+    @Override
+    public List<CartItem> handleEditCartItem(long id,int soLuong, List<CartItem> list) {
+        List<CartItem> itemList = list;
+        for (CartItem item : itemList) {
+            if (item.getGoods().getId() == id) {
+                item.setAmount(soLuong);
+                item.setTotalPrice(soLuong*item.getPrice());
+                break;
+            }
+        }
+        return itemList;
+    }
 }

@@ -73,17 +73,27 @@
             </ul>
             <ul class="navbar-nav ml-auto font-weight-bold">
                 <li class="nav-item">
-                    <a class="nav-link disabled" th:text="'Xin chào: '  + *{session.staff.name}"></a>
+                    <a class="nav-link disabled" style="color: deepskyblue" th:text="'Xin chào: '  + *{session.staff.name}"></a>
                 </li>
                 <!--                <li class="nav-item">-->
                 <!--                    <a class="nav-link"  th:href="@{/home-staff}">Tài khoản</a>-->
                 <!--                </li>-->
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/logout}"> Đăng xuất </a>
+                    <a class="nav-link" onclick="Confirm()"> Đăng xuất </a>
                 </li>
 
             </ul>
         </div>
+        <script>
+            function Confirm(){
+                var choose = confirm("Bạn có chắc chắc muốn đăng xuất?");
+                if(choose==true){
+                    window.location.href='/logout';
+                    //var x = window.location.href;
+                    //console.log(x);
+                }
+            }
+        </script>
     </nav>
 
 </div>
