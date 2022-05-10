@@ -26,9 +26,7 @@ public class CustomerController {
         List<Customer> customerList = new ArrayList<>();
         customerList = customerService.getAllCustomer();
         // đây là id của khách lẻ, thì không cho hiển thị ra
-        customerList.removeIf(customer -> customer.getName().equals("Khách lẻ"));
         model.addAttribute("listCustomer", customerList);
-        customerList.removeIf(customer -> (customer.getId() == 1));
         return "get-customers";
     }
 
@@ -93,6 +91,7 @@ public class CustomerController {
     @GetMapping("/delete")
     public String delete(@RequestParam("id") int id) {
         customerService.deleteCustomerById(id);
+        //check id còn tồn tại hay không
         return "redirect:/customer/list-customer";
     }
 

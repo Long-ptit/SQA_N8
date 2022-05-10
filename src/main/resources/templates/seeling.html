@@ -249,37 +249,37 @@
                 <span style="color:red" th:text="${error_so_luong}"> </span>
             </form>
         </div>
-        <div class="ms-3 formBanHang col-5">
+        <div class="ms-1 formBanHang col-6">
             <h5 th:if="${session.bill.getCustomer().name != null}" th:text="'Tên khách hàng: ' + ${session.bill.getCustomer.name}"></h5>
             <h5 th:if="${session.bill.getCustomer().phone != null}"  th:text="'Số điện thoại: ' + ${session.bill.getCustomer.phone}"></h5>
             <h5 th:if="${session.bill.getCustomer().name != null}" th:text="'Mã khách hàng: ' + ${session.bill.getCustomer.id}"></h5>
             <span style="color:red" th:text="${error_khach_hang}"></span>
             <div class="anyClass">
                 <div class="table-KH " id="myTable">
-                    <table class="table table-hover">
+                    <table class="table table-hover"  style="align-items: center">
                         <thead class="">
                         <tr>
-                            <th scope="col">STT</th>
-                            <th scope="col">Mã sản phẩm</th>
-                            <th scope="col">Tên sản phẩm</th>
-                            <th scope="col">Số lượng</th>
-                            <th scope="col">Đơn giá</th>
-                            <th scope="col">Thành tiền</th>
-                            <th scope="col">Chọn</th>
+                            <th scope="col" style="vertical-align: middle;">STT</th>
+                            <th scope="col" style="vertical-align: middle;">Mã sản phẩm</th>
+                            <th scope="col" style="vertical-align: middle;">Tên sản phẩm</th>
+                            <th scope="col" style="vertical-align: middle;">Số lượng</th>
+                            <th scope="col" style="vertical-align: middle;">Đơn giá</th>
+                            <th scope="col" style="vertical-align: middle;">Thành tiền</th>
+                            <th scope="col" style="vertical-align: middle;">Chọn</th>
                         </tr>
                         </thead>
                         <tbody>
                         <form th:action="@{/banhang/suaSanPham}" method="post">
                         <tr th:each="cart,index : ${session.listCart}">
-                            <td th:text="${index.index + 1}"></td>
-                            <td th:text="${cart.goods.id}"></td>
-                            <td th:text="${cart.name}"></td>
-                            <td>
+                            <td style="vertical-align: middle;" th:text="${index.index + 1}"></td>
+                            <td style="vertical-align: middle;" th:text="${cart.goods.id}"></td>
+                            <td style="vertical-align: middle;" th:text="${cart.name}"></td>
+                            <td style="vertical-align: middle;">
                                 <input type="number" th:value="${cart.amount}" required name="soLuongSua" min="1" style="width: 1.5cm; text-align: center">
                             </td>
-                            <td th:text="${#numbers.formatInteger(cart.price,3,'COMMA')}"></td>
-                            <td th:text="${#numbers.formatInteger(cart.totalPrice,3,'COMMA')}"></td>
-                            <td>
+                            <td style="vertical-align: middle;" th:text="${#numbers.formatInteger(cart.price,3,'COMMA')}"></td>
+                            <td style="vertical-align: middle;" th:text="${#numbers.formatInteger(cart.totalPrice,3,'COMMA')}"></td>
+                            <td style="vertical-align: middle;">
                                 <a th:href="@{/banhang/xoaSanPham(id=${cart.goods.id})}" class="btn btn-primary chonKH" th:text="Xóa"> </a>
                                 <button type="submit" th:text="Sửa" class="btn btn-primary chonKH"> </button>
                                 <input th:value="${cart.goods.id}" name="id" hidden>
@@ -302,7 +302,7 @@
                     </div>
 
                     <div class="row">
-                        <div class="d-flex justify-content-start me-4 mb-1 " style="font-weight: bold;">
+                        <div class="d-flex justify-content-start me-4 mb-1 align-items-center " style="font-weight: bold;" >
                             Giảm giá:
                             <input type="text" class="form-control ms-1" style="width: 2cm; height: 30px; "
                                    name="giamGia" value="0"></div>
