@@ -2,7 +2,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
-
+<title>Quản lý khách hàng</title>
 <head th:replace="common/default :: header" />
 
 <body style="padding: 10px 20px">
@@ -10,15 +10,13 @@
 <div th:replace="common/default :: navbar"> </div>
 
 <h1 style="margin-top: 60px" >Danh sách khách hàng</h1>
-<a  style="padding: 10px 16px; color: white" class="btn btn-primary" th:href="@{/home}" role="button">Quay lại</a>
-<!--<a  style="padding: 10px 16px" class="btn btn-success" th:href="@{/customer/add}" role="button">Thêm khách hàng</a>-->
 
+<a  style="  color: white" class="btn btn-primary"  th:href="@{/home}" role="button">Quay lại</a>
 
+<div style="padding: 10px 16px; margin-left: -16px" class="input-group">
 
-<div style="margin: 10px 16px" class="input-group">
-
-  <form method="get" th:action="@{/customer/search}">
-    <div class="row">
+  <form method="get" th:action="@{/bill/search}">
+    <div class="input-group">
       <input type="text" name="key" placeholder="Số điện thoại" />
       <button type="submit"  class="btn btn-primary">
         <i class="fas fa-search"></i>
@@ -64,7 +62,7 @@
 </div>
 <div th:replace="common/default :: body-scripts"> </div>
 <script>
-  function Confirm(id){
+  function Confirm1(id){
     var choose = confirm("Bạn có chắc chắc muốn xóa người dùng nay không?");
     if(choose==true){
       window.location.href='/customer/delete?id='+id;

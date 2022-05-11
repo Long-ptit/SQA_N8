@@ -24,7 +24,7 @@ public class Customer {
 
     @Size(max = 30, min = 6, message = "Tên không được để trống, và phải có từ 6-30 kí tự!!")
     private String name;
-    @Size(min = 9, max = 11, message = "Số điện thoại không được để trống, phải có từ 9 đến 11 kí tự!")
+    @Size(min = 10, max = 11, message = "Số điện thoại không được để trống, phải có 10 hoặc 11 số!")
     private String phone;
     @NotBlank(message = "Email không được để trống!")
     private String email;

@@ -2,7 +2,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
-
+<title>Giao diện quản lý hóa đơn</title>
 <head th:replace="common/default :: header" />
 
 <body style="padding: 10px 20px">
@@ -11,13 +11,13 @@
 
 <h1 style="margin-top: 60px" >Danh sách hóa đơn</h1>
 
-<a  style="padding: 10px 16px; color: white" class="btn btn-primary"  th:href="@{/home}" role="button">Quay lại</a>
+<a  style="  color: white" class="btn btn-primary"  th:href="@{/home}" role="button">Quay lại</a>
 
-<div style="margin: 10px 16px" class="input-group">
+<div style="padding: 10px 16px; margin-left: -16px" class="input-group">
 
     <form method="get" th:action="@{/bill/search}">
-        <div class="row">
-            <input type="text" name="key" placeholder="Số điện thoai" />
+        <div class="input-group">
+            <input autofocus="true" type="text" name="key" placeholder="Số điện thoại" />
             <button type="submit"  class="btn btn-primary">
                 <i class="fas fa-search"></i>
             </button>
@@ -36,7 +36,7 @@
             <th scope="col">STT</th>
             <th scope="col">Mã hóa đơn</th>
             <th scope="col">Tên khách hàng</th>
-            <th scope="col">Số điện thoại</th>
+            <th scope="col">Số điện thoại hiện tại</th>
             <th scope="col">Mã nhân viên </th>
             <th scope="col">Tên nhân viên </th>
             <th scope="col">Thời gian thanh toán</th>
@@ -47,8 +47,8 @@
         <tr th:each="bill,index : ${listBills}" >
             <th scope="row" th:text="*{index.index + 1}"></th>
             <th  th:text="*{bill.id}"></th>
-            <td th:text="*{bill.customer.id}" ></td>
-            <td th:text="*{bill.customerPhone}" ></td>
+            <td th:text="*{bill.customerName}" ></td>
+            <td th:text="*{bill.customer.phone}" ></td>
             <td th:text="*{bill.staff.id}" ></td>
             <td th:text="*{bill.staff.name}" ></td>
             <td th:text="*{bill.date}"></td>

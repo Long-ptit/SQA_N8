@@ -14,7 +14,7 @@ public interface CustomerService {
 
     List<Customer> getCustomers();
 
-    Boolean saveCustoemr(Customer customer);
+    Boolean saveCustoemr(Customer customerm);
 
     List<Customer> getAllCustomer();
 

@@ -59,29 +59,18 @@
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav mr-auto font-weight-bold">
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/home}"> Trang chủ</a>
+                   <h4> <a class="nav-link" th:href="@{/home}"> Trang chủ</a></h4>
                 </li>
-<!--                <li class="nav-item">-->
-<!--                    <a class="nav-link" th:href="@{/bill/list-bill}"> Quản lý hóa đơn </a>-->
-<!--                </li>-->
-<!--                <li class="nav-item">-->
-<!--                    <a class="nav-link" th:href="@{/customer/list-customer}"> Quản lý khách hàng </a>-->
-<!--                </li>-->
-<!--                <li class="nav-item">-->
-<!--                    <a class="nav-link" th:href="@{/}"> Bán Hàng </a>-->
-<!--                </li>-->
             </ul>
+
+
             <ul class="navbar-nav ml-auto font-weight-bold">
                 <li class="nav-item">
                     <a class="nav-link disabled" style="color: deepskyblue" th:text="'Xin chào: '  + *{session.staff.name}"></a>
                 </li>
-                <!--                <li class="nav-item">-->
-                <!--                    <a class="nav-link"  th:href="@{/home-staff}">Tài khoản</a>-->
-                <!--                </li>-->
                 <li class="nav-item">
-                    <a class="nav-link" onclick="Confirm()"> Đăng xuất </a>
+                    <a  style="cursor: pointer;"  class=" nav-link" onclick="Confirm()"> Đăng xuất </a>
                 </li>
-
             </ul>
         </div>
         <script>
