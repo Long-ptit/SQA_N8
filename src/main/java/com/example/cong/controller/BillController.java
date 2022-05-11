@@ -112,10 +112,7 @@ public String search(@RequestParam("key") String text, Model model) {
             System.out.println("Truong hop injection");
             System.out.println("Text: " + s);
             model.addAttribute("notify", "Dữ liệu không khớp, hoặc không tồn tại, vui lòng thử lại!");
-        }else if(s.length()<10 || s.length()>11){
-            model.addAttribute("notify", "Dữ liệu không khớp, hoặc không tồn tại, vui lòng thử lại!!");
         }
-
         else {
             customerList = customerService.getCustomerByPhone(s);
             System.out.println("Dau Vao la so dien thoai");
